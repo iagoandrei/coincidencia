@@ -9,12 +9,12 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden; /* evita rolagem */
+      overflow: hidden;
     }
 
     body {
       background-image: url('background.jpeg'); 
-      background-size: contain; /* faz a imagem caber inteira */
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
@@ -28,26 +28,49 @@
 </head>
 <body>
   <!-- Música de fundo -->
-  <audio id="bg-music" autoplay loop>
-    <source src="musica.mp3" type="audio/mpeg">
-    Seu navegador não suporta áudio.
-  </audio>
+  <audio id="bg-music" autoplay></audio>
 
   <script>
     const audio = document.getElementById("bg-music");
 
-    // Tenta iniciar a reprodução automaticamente
-    audio.play().catch(() => {
-      console.log("Autoplay bloqueado. Esperando interação do usuário...");
+    // Lista de músicas
+    const playlist = [
+      'musica.mp3',
+      'musica1.mp3',
+      'musica2.mp3',
+      'musica3.mp3'
+    ];
 
-      // Toca após o usuário clicar em qualquer lugar da tela
-      const ativarAudio = () => {
-        audio.play();
-        document.removeEventListener("click", ativarAudio);
-      };
+    let currentTrack = 0;
 
-      document.addEventListener("click", ativarAudio);
+    // Função para carregar e tocar a música atual
+    function playCurrentTrack() {
+      audio.src = playlist[currentTrack];
+      audio.play().catch(() => {
+        console.log("Autoplay bloqueado. Aguardando interação do usuário.");
+        const ativarAudio = () => {
+          audio.play();
+          document.removeEventListener("click", ativarAudio);
+        };
+        document.addEventListener("click", ativarAudio);
+      });
+    }
+
+    // Quando a música atual terminar, vai para a próxima
+    audio.addEventListener("ended", () => {
+      currentTrack++;
+      if (currentTrack < playlist.length) {
+        playCurrentTrack();
+      } else {
+        // Reinicia a playlist se quiser
+        currentTrack = 0;
+        playCurrentTrack();
+        // Ou remova a linha acima se quiser parar ao final
+      }
     });
+
+    // Começa tocando
+    playCurrentTrack();
   </script>
 </body>
 </html>
