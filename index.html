@@ -9,79 +9,44 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
+      overflow: hidden; /* evita rolagem */
     }
 
     body {
       background-image: url('background.jpeg'); 
-      background-size: contain;
+      background-size: contain; /* faz a imagem caber inteira */
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       color: white;
       font-family: sans-serif;
       text-shadow: 1px 1px 4px black;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 1em;
-      background-color: rgba(255, 255, 255, 0.2);
-      border: 2px solid white;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
 <body>
-  <h1>Essa música é pra você 🌻</h1>
-  <button id="play-btn">Toque meu coração 💛</button>
-
   <!-- Música de fundo -->
-  <audio id="bg-music" loop>
+  <audio id="bg-music" autoplay loop>
     <source src="musica.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
   </audio>
 
   <script>
     const audio = document.getElementById("bg-music");
-    const btn = document.getElementById("play-btn");
 
-    // Quando o botão for clicado, inicia a música
-    btn.addEventListener("click", () => {
-      audio.play().then(() => {
-        btn.style.display = "none"; // esconde o botão depois de tocar
-      }).catch(() => {
-        alert("Não foi possível tocar a música. Tente novamente.");
-      });
-    });
+    // Tenta iniciar a reprodução automaticamente
+    audio.play().catch(() => {
+      console.log("Autoplay bloqueado. Esperando interação do usuário...");
 
-    // Tenta tocar automaticamente com mute (fallback)
-    window.addEventListener("load", () => {
-      audio.muted = true;
-      audio.play().then(() => {
-        setTimeout(() => {
-          audio.muted = false;
-          audio.play().catch(() => {});
-        }, 1000);
-      }).catch(() => {
-        // aguardará clique do usuário
-      });
+      // Toca após o usuário clicar em qualquer lugar da tela
+      const ativarAudio = () => {
+        audio.play();
+        document.removeEventListener("click", ativarAudio);
+      };
+
+      document.addEventListener("click", ativarAudio);
     });
   </script>
 </body>
