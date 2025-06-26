@@ -33,19 +33,36 @@
   <script>
     const audio = document.getElementById("bg-music");
 
-    // Lista de músicas
     const playlist = [
       'musica.mp3',
       'musica1.mp3',
       'musica2.mp3',
-      'musica3.mp3'
+      'musica3.mp3',
+      'musica4.mp3',
+      'musica5.mp3',
+      'musica6.mp3',
     ];
 
-    let currentTrack = 0;
+    // Função para embaralhar o array (Fisher-Yates shuffle)
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
 
-    // Função para carregar e tocar a música atual
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // Troca de posição
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+
+      return array;
+    }
+
+    let shuffledPlaylist = shuffle([...playlist]); // copia e embaralha
+    let currentTrackIndex = 0;
+
     function playCurrentTrack() {
-      audio.src = playlist[currentTrack];
+      audio.src = shuffledPlaylist[currentTrackIndex];
       audio.play().catch(() => {
         console.log("Autoplay bloqueado. Aguardando interação do usuário.");
         const ativarAudio = () => {
@@ -56,20 +73,16 @@
       });
     }
 
-    // Quando a música atual terminar, vai para a próxima
     audio.addEventListener("ended", () => {
-      currentTrack++;
-      if (currentTrack < playlist.length) {
-        playCurrentTrack();
-      } else {
-        // Reinicia a playlist se quiser
-        currentTrack = 0;
-        playCurrentTrack();
-        // Ou remova a linha acima se quiser parar ao final
+      currentTrackIndex++;
+      if (currentTrackIndex >= shuffledPlaylist.length) {
+        // Reembaralha quando acabar todas as músicas
+        shuffledPlaylist = shuffle([...playlist]);
+        currentTrackIndex = 0;
       }
+      playCurrentTrack();
     });
 
-    // Começa tocando
     playCurrentTrack();
   </script>
 </body>
