@@ -28,9 +28,26 @@
 </head>
 <body>
   <!-- Música de fundo -->
-  <audio autoplay loop>
+  <audio id="bg-music" autoplay loop>
     <source src="musica.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
   </audio>
+
+  <script>
+    const audio = document.getElementById("bg-music");
+
+    // Tenta iniciar a reprodução automaticamente
+    audio.play().catch(() => {
+      console.log("Autoplay bloqueado. Esperando interação do usuário...");
+
+      // Toca após o usuário clicar em qualquer lugar da tela
+      const ativarAudio = () => {
+        audio.play();
+        document.removeEventListener("click", ativarAudio);
+      };
+
+      document.addEventListener("click", ativarAudio);
+    });
+  </script>
 </body>
 </html>
