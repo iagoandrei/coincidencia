@@ -9,12 +9,12 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden; /* evita rolagem */
+      overflow: hidden;
     }
 
     body {
       background-image: url('background.jpeg'); 
-      background-size: contain; /* faz a imagem caber inteira */
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
@@ -27,8 +27,8 @@
   </style>
 </head>
 <body>
-  <!-- Música de fundo -->
-  <audio id="bg-music" autoplay loop>
+  <!-- Música de fundo começa mutada -->
+  <audio id="bg-music" autoplay loop muted>
     <source src="musica.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
   </audio>
@@ -36,18 +36,14 @@
   <script>
     const audio = document.getElementById("bg-music");
 
-    // Tenta iniciar a reprodução automaticamente
-    audio.play().catch(() => {
-      console.log("Autoplay bloqueado. Esperando interação do usuário...");
-
-      // Toca após o usuário clicar em qualquer lugar da tela
-      const ativarAudio = () => {
-        audio.play();
-        document.removeEventListener("click", ativarAudio);
-      };
-
-      document.addEventListener("click", ativarAudio);
-    });
+    // Aguarda um pequeno delay para garantir que o autoplay funcionou
+    setTimeout(() => {
+      // Tira o mute e tenta tocar com som
+      audio.muted = false;
+      audio.play().catch(err => {
+        console.warn("O navegador ainda bloqueou o som. Requer interação do usuário.");
+      });
+    }, 1000);
   </script>
 </body>
 </html>
